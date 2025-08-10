@@ -59,6 +59,23 @@ if(TACHYON_BUILD_TESTS)
 endif()
 
 
+# Tachyon benchmarks
+if(TACHYON_BUILD_BENCHMARKS)
+    # Find all .cpp files in benchmarks/
+    file(GLOB BENCH_SOURCES "${CMAKE_SOURCE_DIR}/benchmarks/*.cpp")
+
+    foreach(bench_src ${BENCH_SOURCES})
+        get_filename_component(bench_name ${bench_src} NAME_WE)
+
+        add_executable(${bench_name} ${bench_src})
+        target_link_libraries(${bench_name} PRIVATE tachyon)
+
+        # (Optional) Set higher optimization for benchmarks even in Debug mode
+        target_compile_options(${bench_name} PRIVATE -O3 -march=native)
+    endforeach()
+endif()
+
+
 set(MAIN_TEST_FILES
     tests/test_ringbuffer.cpp
 )
