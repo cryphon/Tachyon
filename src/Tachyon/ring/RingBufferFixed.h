@@ -61,8 +61,9 @@ private:
         return is_pot_ ? (j & mask_) : (j == cap_ ? 0 : j);
     }
 
-    size_t cap_, mask_;
+    size_t cap_;
     bool   is_pot_;
+    size_t mask_;
     std::vector<T> buf_;
     size_t head_, tail_;
 };
