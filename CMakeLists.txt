@@ -82,8 +82,9 @@ set(MAIN_TEST_FILES
 
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/
-    DESTINATION include/tachyon
-    FILES_MATCHING PATTERN "*.hpp"
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
 )
+
 
 

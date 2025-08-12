@@ -1,82 +1,82 @@
-#include "RingBuffer.h"
+#include <Tachyon/ring/RingBufferFixed.h>
 #include <cassert>
 #include <cstdio>
 #include <string>
+#include <vector>
+
+using Tachyon::ring::RingBufferFixed;
 
 // test macro
 #define CHECK(expr) do { if(!(expr)) { \
-    std::fprintf(stderr, "CHECK failed: %s at %s:%d\n", #expr, __FILE__, __LINE__); \
-    return 1; } } while(0)
+  std::fprintf(stderr, "CHECK failed: %s at %s:%d\n", #expr, __FILE__, __LINE__); \
+  return 1; } } while(0)
 
-template<std::size_t N>
-int test_int_buffer_basic() {
-    RingBuffer<int, N> rb;
-
-    // 1) empty on init
+int test_int_buffer_basic(std::size_t cap) {
+    RingBufferFixed<int> rb(cap);  // runtime capacity (usable = cap - 1)
     CHECK(rb.empty());
     CHECK(!rb.full());
     CHECK(rb.size() == 0);
+    CHECK(rb.capacity() == cap - 1);
 
-    // special case: N == 1 would violate our static_assert; we require N >= 2
-    static_assert(N >= 2);
-
-    // 2) push until full (usable slots = N-1)
-    for(std::size_t i = 0; i < N - 1; ++i) {
-        CHECK(rb.push(static_cast<int>(i)));
+    // 1) fill to full (N-1 usable)
+    for (std::size_t i = 0; i < rb.capacity(); ++i) {
+        CHECK(rb.try_push(static_cast<int>(i)));
         CHECK(rb.size() == i + 1);
     }
-
     CHECK(rb.full());
-    CHECK(!rb.push(999)); // overflow should fail
+    CHECK(!rb.try_push(999));   // overflow should fail
 
-    // 3) pop a few to force wrap behavior on subsequent pushes
+    // 2) pop half to create space and force wrap later
     int out = -1;
-    for (std::size_t i = 0; i < (N - 1) / 2; ++i) {
-        CHECK(rb.pop(out));
+    std::size_t half = rb.capacity() / 2;
+    for (std::size_t i = 0; i < half; ++i) {
+        CHECK(rb.try_pop(out));
         CHECK(out == static_cast<int>(i));
     }
 
-    // 4) push again to wrap head over index 0
-    for (std::size_t i = 0; i < (N - 1) / 2; ++i) {
-        CHECK(rb.push(1000 + static_cast<int>(i)));
+    // 3) push again to wrap head
+    for (std::size_t i = 0; i < half; ++i) {
+        CHECK(rb.try_push(1000 + static_cast<int>(i)));
     }
 
-    // 5) pop everything and verify FIFO order across wrap
-    std::size_t expected = (N - 1) / 2;
+    // 4) pop everything; verify FIFO across wrap
+    std::size_t expected = half;
     std::size_t off = 0;
     while (!rb.empty()) {
-        CHECK(rb.pop(out));
-        if (expected < (N - 1)) {
+        CHECK(rb.try_pop(out));
+        if (expected < rb.capacity()) {
             CHECK(out == static_cast<int>(expected));
             ++expected;
         } else {
-            // wrapped values
             CHECK(out == 1000 + static_cast<int>(off));
             ++off;
         }
     }
     CHECK(rb.size() == 0);
-    CHECK(!rb.pop(out)); // underflow should fail
+    int dummy;
+    CHECK(!rb.try_pop(dummy)); // underflow should fail
     return 0;
 }
 
 int test_string_buffer() {
-    // Simple sanity for non-POD type
-    RingBuffer<std::string, 4> rb;
+    RingBufferFixed<std::string> rb(4);
     CHECK(rb.empty());
-    CHECK(rb.push(std::string("a")));
-    CHECK(rb.push(std::string("b")));
+    CHECK(rb.try_push(std::string("a")));
+    CHECK(rb.try_push(std::string("b")));
     std::string s;
-    CHECK(rb.pop(s) && s == "a");
-    CHECK(rb.pop(s) && s == "b");
+    CHECK(rb.try_pop(s) && s == "a");
+    CHECK(rb.try_pop(s) && s == "b");
     return 0;
 }
 
-int main(void) {
-    CHECK(test_int_buffer_basic<2>() == 0);
-    CHECK(test_int_buffer_basic<3>() == 0);
-    CHECK(test_int_buffer_basic<4>() == 0);
-    CHECK(test_int_buffer_basic<8>() == 0);
+int main() {
+    // Mix POT and non-POT to exercise mask and non-mask paths
+    CHECK(test_int_buffer_basic(2) == 0);   // usable 1
+    CHECK(test_int_buffer_basic(3) == 0);   // non-POT
+    CHECK(test_int_buffer_basic(4) == 0);   // POT
+    CHECK(test_int_buffer_basic(8) == 0);   // POT
+    CHECK(test_int_buffer_basic(17) == 0);  // non-POT
     CHECK(test_string_buffer() == 0);
     return 0;
 }
+
