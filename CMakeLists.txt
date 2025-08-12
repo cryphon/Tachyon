@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(Tachyon)
 
+find_package(Threads REQUIRED)
+
 
 
 option(TACHYON_BUILD_TESTS "Build tests" ON)
@@ -51,7 +53,7 @@ if(TACHYON_BUILD_TESTS)
         get_filename_component(test_name ${test_src} NAME_WE)
 
         add_executable(${test_name} ${test_src})
-        target_link_libraries(${test_name} PRIVATE tachyon)
+        target_link_libraries(${test_name} PRIVATE tachyon Threads::Threads)
 
         # Add to CTest
         add_test(NAME ${test_name} COMMAND ${test_name})
@@ -68,7 +70,7 @@ if(TACHYON_BUILD_BENCHMARKS)
         get_filename_component(bench_name ${bench_src} NAME_WE)
 
         add_executable(${bench_name} ${bench_src})
-        target_link_libraries(${bench_name} PRIVATE tachyon)
+        target_link_libraries(${bench_name} PRIVATE tachyon Threads::Threads)
 
         # (Optional) Set higher optimization for benchmarks even in Debug mode
         target_compile_options(${bench_name} PRIVATE -O3 -march=native)
