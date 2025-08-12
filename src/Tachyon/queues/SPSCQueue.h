@@ -74,8 +74,9 @@ private:
     }
 
 
-    size_t cap_, mask_;
+    size_t cap_;
     bool is_pot_;
+    size_t mask_;
     std::vector<T> storage_;    // OK for SPSC; produces/consumer touch disjoint indices
     std::atomic<size_t> head_, tail_;
 
