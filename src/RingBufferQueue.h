@@ -4,9 +4,9 @@
 #include <condition_variable>
 
 template<typename T>
-class SPSCQueueLocked {
+class RingBufferQueue {
 public:
-    explicit SPSCQueueLocked(size_t capacity)
+    explicit RingBufferQueue(size_t capacity)
         : buffer(capacity + 1),
         head_(0),
         tail_(0),

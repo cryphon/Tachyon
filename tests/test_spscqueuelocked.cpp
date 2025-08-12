@@ -1,4 +1,4 @@
-#include "SPSCQueueLocked.h"
+#include "RingBufferQueue.h"
 #include <cassert>
 #include <cstdio>
 #include <string>
@@ -9,7 +9,7 @@
     std::fprintf(stderr, "CHECK failed: %s at %s:%d\n", #expr, __FILE__, __LINE__); \
     return 1; } } while(0)
 
-// NOTE: Unlike RingBuffer, SPSCQueueLocked uses blocking push/pop and doesn't
+// NOTE: Unlike RingBuffer, RingBufferQueue uses blocking push/pop and doesn't
 // expose empty/full/size. These tests avoid calling push on a full queue or
 // pop on an empty queue to prevent blocking.
 
@@ -18,8 +18,8 @@
 
 template<std::size_t CAP>
 int test_int_queue_basic() {
-    static_assert(CAP >= 1, "SPSCQueueLocked supports CAP >= 1");
-    SPSCQueueLocked<int> q(CAP);
+    static_assert(CAP >= 1, "RingBufferQueue supports CAP >= 1");
+    RingBufferQueue<int> q(CAP);
 
     // 1) Push exactly CAP elements (queue becomes full but does not block)
     for (std::size_t i = 0; i < CAP; ++i) {
@@ -60,7 +60,7 @@ int test_int_queue_basic() {
 
 // Simple sanity for non-POD types
 int test_string_queue() {
-    SPSCQueueLocked<std::string> q(4);
+    RingBufferQueue<std::string> q(4);
     q.push(std::string("a"));
     q.push(std::string("b"));
     std::string s;

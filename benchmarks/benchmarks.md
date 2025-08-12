@@ -12,19 +12,19 @@ ST RingBuffer (N=1024, int)
   ns/op: 0.324057
 ```
 
-### SPSC Queue Locked RingBuffer without POT(Power Of Two) optimizations for idx
-`taskset -c 3 ./bench_spscqueuelocked`
+### RingBufferQueue without POT(Power Of Two) optimizations for idx
+`taskset -c 3 ./bench_ringbufferqueue`
 ```bash
-Single-thread SPSC Queue Locked RingBuffer NO-POT
+Single-thread RingBufferQueue NO-POT
   Total time: 0.0841611s
   Ops/sec: 2.37639e+08
   ns/op: 4.20806
 ```
-### SPSC Queue Locked RingBuffer with POT optimizations
+### RingBufferQueue with POT optimizations
 It seems there might have been an issue with the NO-POT implementation. Based on this run we can determine with the correct operations that this implementation is slower(?)
-`taskset -c 3 ./bench_spscqueuelocked`
+`taskset -c 3 ./bench_ringbufferqueue`
 ```bash
-Single-thread SPSC Queue Locked RingBuffer POT
+Single-thread RingBufferQueue POT
     Total time: 0.098163s 
     Ops/sec: 2.03743e+08 
     ns/op: 4.90815

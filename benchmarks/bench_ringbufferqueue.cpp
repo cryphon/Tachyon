@@ -1,11 +1,11 @@
-#include "SPSCQueueLocked.h"
+#include "RingBufferQueue.h"
 #include "benchmark.hpp"
 
 
 
 int main() {
     constexpr size_t N = 10'000'000;
-    SPSCQueueLocked<int> spsc(1024);
+    RingBufferQueue<int> spsc(1024);
     volatile int sink = 0;
 
     bench::run("Single-thread SPSC Queue Locked RingBuffer", [&] {
