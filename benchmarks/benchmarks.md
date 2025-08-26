@@ -1,17 +1,5 @@
 # Benchmark statistics
 
-All tests are ran using `-O3 -march=native -DnDEBUG` as of now
-
-
-### classic RingBuffer
-Fixed-size ring buffer with power-of-two indexing, single-threaded benchmark.
-`taskset -c 3 ./bench_ringbuffer`
-```bash
-ST RingBuffer (N=1024, int)
-  Total time: 0.00648115s
-  Ops/sec: 3.08587e+09
-# Benchmark statistics
-
 All tests are compiled with `-O3 -march=native -DnDEBUG`. CPU pinning is done using `taskset -c 3` unless otherwise specified. Results represent **single runs**; absolute values may vary slightly depending on system load, but relative trends are stable.
 
 ---
