@@ -4,10 +4,6 @@ using Tachyon::queues::SPSCQueue;
 
 int main() {
     bench::run_queue_benchmark<SPSCQueue<int>>(
-        "SPSCQueue<int>", bench::Mode::SingleThread, 10'000'000
-    );
-    
-    bench::run_queue_benchmark<SPSCQueue<int>>(
         "SPSCQueue<int>", bench::Mode::SPSC, 10'000'000
     );
 }
