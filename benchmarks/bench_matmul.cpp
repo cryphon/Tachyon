@@ -48,8 +48,9 @@ int main(int argc, char** argv) {
     std::uniform_real_distribution<double> dist(-1.0, 1.0);
 
     std::vector<Variant> variants = {
-        {"ijk",  tachyon::linalg::mm_ijk<double>},
-        {"ikj",  tachyon::linalg::mm_ikj<double>},
+        {"ijk", tachyon::linalg::mm_ijk<double>},
+        {"jik", tachyon::linalg::mm_jik<double>},
+        {"ikj", tachyon::linalg::mm_ikj<double>},
     };
 
     // formatting helpers
