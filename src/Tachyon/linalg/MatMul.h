@@ -60,6 +60,7 @@ inline void mm_ikj(const T* TACHYON_RESTRICT A,const T* TACHYON_RESTRICT B, T* T
     }
 }
 
+// jik
 template<typename T>
 inline void mm_jik(const T* TACHYON_RESTRICT A,const T* TACHYON_RESTRICT B, T* TACHYON_RESTRICT C, std::size_t M, std::size_t N, std::size_t K) noexcept {
     zero(C, M, N);
@@ -70,6 +71,20 @@ inline void mm_jik(const T* TACHYON_RESTRICT A,const T* TACHYON_RESTRICT B, T* T
                 sum += A[i*K + k] * B[k*N + j];
             }
             C[i*N + j] = sum;
+        }
+    }
+}
+
+// jki
+template<typename T>
+inline void mm_jki(const T* TACHYON_RESTRICT A,const T* TACHYON_RESTRICT B, T* TACHYON_RESTRICT C, std::size_t M, std::size_t N, std::size_t K) noexcept {
+    zero(C, M, N);
+    for(size_t j = 0; j < N; ++j) {
+        for(size_t k = 0; k < K; ++k) {
+            const size_t b_row = k*N;
+            for(size_t i = 0; i < M; ++i) {
+                C[i*N + j] += A[i*K + k] * B[b_row + j];
+            }
         }
     }
 }

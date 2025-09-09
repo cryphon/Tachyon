@@ -50,6 +50,7 @@ int main(int argc, char** argv) {
     std::vector<Variant> variants = {
         {"ijk", tachyon::linalg::mm_ijk<double>},
         {"jik", tachyon::linalg::mm_jik<double>},
+        {"jki", tachyon::linalg::mm_jki<double>},
         {"ikj", tachyon::linalg::mm_ikj<double>},
     };
 
