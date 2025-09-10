@@ -105,4 +105,19 @@ inline void mm_kij(const T* TACHYON_RESTRICT A,const T* TACHYON_RESTRICT B, T* T
     }
 }
 
+
+template<typename T>
+inline void mm_kji(const T* TACHYON_RESTRICT A,const T* TACHYON_RESTRICT B, T* TACHYON_RESTRICT C, std::size_t M, std::size_t N, std::size_t K) noexcept {
+    zero(C, M, N);
+    for(size_t k = 0; k < K; ++k) {
+        for(size_t j = 0; j < N; ++j) {
+        const T b = B[k*N + j];
+            for(size_t i = 0; i < M; ++i) {
+                C[i*N + j] += A[i*K + k] * b;
+            }   
+        }
+    }
+}
+
+
 }
