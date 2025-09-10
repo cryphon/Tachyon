@@ -52,6 +52,7 @@ int main(int argc, char** argv) {
         {"jik", tachyon::linalg::mm_jik<double>},
         {"jki", tachyon::linalg::mm_jki<double>},
         {"ikj", tachyon::linalg::mm_ikj<double>},
+        {"kij", tachyon::linalg::mm_kij<double>},
     };
 
     // formatting helpers
