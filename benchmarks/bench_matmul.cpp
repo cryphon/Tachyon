@@ -99,6 +99,15 @@ int main(int argc, char** argv) {
                       << std::right << std::setw(12) << std::fixed << std::setprecision(3) << ms
                       << std::setw(14) << std::setprecision(2) << gf << "\n";
         }
+
+        tachyon::linalg::transpose(B.data(), BT.data(), K, N);
+        {
+            const double ms = time_ms([&]{ tachyon::linalg::mm_ijk_Bt(A.data(), BT.data(), C.data(), M, N, K); });
+            const double gf = gflops(M,N,K,ms);
+            std::cout << std::left << std::setw(20) << "ijk + B^T"
+                      << std::right << std::setw(12) << std::fixed << std::setprecision(3) << ms
+                      << std::setw(14) << std::setprecision(2) << gf << "\n";
+        }
     }
     return 0;
 }

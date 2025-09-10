@@ -120,4 +120,24 @@ inline void mm_kji(const T* TACHYON_RESTRICT A,const T* TACHYON_RESTRICT B, T* T
 }
 
 
+
+// Pre-transposed B (turn ijk into row-walk x row-walk)
+template<typename T>
+inline void mm_ijk_Bt(const T* TACHYON_RESTRICT A,
+                      const T* TACHYON_RESTRICT BT,
+                      T* TACHYON_RESTRICT C,
+                      std::size_t M, std::size_t N, std::size_t K) noexcept {
+    zero(C, M, N);
+    for(size_t i = 0; i < M; ++i) {
+        for(size_t j = 0; j < N; ++j) {
+            const size_t bt_row = j*K;
+            T sum = 0;
+            for(size_t k = 0; k < K; ++k) {
+                sum += A[i*K + k] * BT[bt_row + k];
+            }
+            C[i*N + j] = sum;
+        }
+    }
+}
+
 }
